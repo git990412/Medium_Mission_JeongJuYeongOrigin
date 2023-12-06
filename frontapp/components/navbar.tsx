@@ -1,3 +1,4 @@
+'use client'
 import {
     Navbar as NextUINavbar,
     NavbarBrand,
@@ -7,7 +8,6 @@ import {
     NavbarMenuItem,
     NavbarMenuToggle,
 } from "@nextui-org/navbar";
-import {Button} from "@nextui-org/button";
 import {Link} from "@nextui-org/link";
 
 import {link as linkStyles} from "@nextui-org/theme";
@@ -15,18 +15,24 @@ import NextLink from "next/link";
 import clsx from "clsx";
 
 import {ThemeSwitch} from "@/components/theme-switch";
+import React from "react";
 
 const navItems = [
     {
         label: "Login",
-        href: "/login",
+        href: "/member/login",
     },
+    {
+        label: "Sign Up",
+        href: "/member/join",
+    }
 ]
 
 export const Navbar = () => {
+    const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
     return (
-        <NextUINavbar maxWidth="xl" position="sticky">
+        <NextUINavbar maxWidth="xl" position="sticky" isMenuOpen={isMenuOpen} onMenuOpenChange={setIsMenuOpen}>
             <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
                 <NavbarBrand as="li" className="gap-3 max-w-fit">
                     <NextLink className="flex justify-start items-center gap-1" href="/">
@@ -56,16 +62,6 @@ export const Navbar = () => {
                         </NavbarItem>
                     ))}
                 </ul>
-                <NavbarItem className="hidden md:flex">
-                    <Button
-                        as={Link}
-                        className="text-sm font-normal text-default-600 bg-default-100"
-                        href={"/member/join"}
-                        variant="flat"
-                    >
-                        Sign Up
-                    </Button>
-                </NavbarItem>
             </NavbarContent>
 
             <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
@@ -78,8 +74,9 @@ export const Navbar = () => {
                     {navItems.map((item, index) => (
                         <NavbarMenuItem key={`${item}-${index}`}>
                             <Link
-                                href="#"
+                                href={item.href}
                                 size="lg"
+                                onClick={() => setIsMenuOpen(false)}
                             >
                                 {item.label}
                             </Link>
