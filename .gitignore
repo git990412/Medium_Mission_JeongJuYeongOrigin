@@ -38,3 +38,6 @@ out/
 
 ### Secret ###
 application-secret.yml.default
+
+### junk ###
+medium_dev.mv.db
