@@ -41,3 +41,4 @@ application-secret.yml.default
 
 ### junk ###
 medium_dev.mv.db
+medium_dev.trace.db
