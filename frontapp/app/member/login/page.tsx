@@ -2,9 +2,15 @@
 import {Input} from "@nextui-org/input";
 import PasswordInput from "@/app/member/join/_components/PasswordInput";
 import {Button} from "@nextui-org/button";
-import React, {ChangeEvent} from "react";
+import React, {ChangeEvent, useEffect} from "react";
+import {instance} from "@/config/axiosConfig";
+import RsData from "@/types/rsData";
+import {useDispatch} from "react-redux";
+import {setAuthState} from "@/_app/feature/auth";
 
 export default function () {
+    const dispatch = useDispatch();
+
     const [inputVal, setInputVal] = React.useState({
         username: "",
         password: "",
@@ -28,10 +34,33 @@ export default function () {
         })
     }
 
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget);
+        const data = Object.fromEntries(formData.entries());
+        instance.post("/members/login", data).then((res) => {
+            const rsData: RsData = res.data;
+            if (rsData.fail) {
+                setError({
+                    ...error,
+                    ...rsData.data
+                })
+            } else {
+                dispatch(setAuthState(true));
+            }
+        })
+    };
+
+    useEffect(() => {
+        instance.post("/members/refreshtoken").then((res) => {
+            console.log(res.data);
+        });
+    }, []);
+
     return (
         <div className="flex flex-col items-center">
             <div className="font-bold text-6xl mt-10">Login</div>
-            <form className="w-3/4 mt-10">
+            <form className="w-3/4 mt-10" onSubmit={handleSubmit}>
                 <Input
                     type="text"
                     variant="bordered"
