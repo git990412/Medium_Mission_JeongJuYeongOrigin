@@ -7,6 +7,8 @@ import {Input} from "@nextui-org/input";
 import {instance} from "@/config/axiosConfig";
 import React, {ChangeEvent, useEffect} from "react";
 import RsData from "@/types/rsData";
+import {useDisclosure} from "@nextui-org/react";
+import CompleteAlert from "@/app/member/join/_components/CompleteAlert";
 
 export default function JoinPage() {
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -24,6 +26,8 @@ export default function JoinPage() {
                     ...error,
                     ...rsData.data
                 })
+            } else {
+                onOpen();
             }
         })
     };
@@ -62,6 +66,8 @@ export default function JoinPage() {
         }
     }, [inputVal]);
 
+    const {isOpen, onOpen, onOpenChange} = useDisclosure();
+
     return (
         <div className="flex flex-col items-center">
             <div className="font-bold text-6xl mt-10">Join</div>
@@ -98,6 +104,7 @@ export default function JoinPage() {
                     회원가입
                 </Button>
             </form>
+            <CompleteAlert isOpen={isOpen} onOpenChange={onOpenChange}/>
         </div>
     );
 }
