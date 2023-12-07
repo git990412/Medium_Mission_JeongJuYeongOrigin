@@ -12,10 +12,11 @@ import com.ll.medium.jwt.service.RefreshTokenService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import java.io.IOException;
-import java.util.HashMap;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,7 +24,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.io.IOException;
+import java.util.HashMap;
 
 @RestController
 @RequiredArgsConstructor
@@ -61,6 +68,23 @@ public class ApiV1MemberController {
     }
 
     return RsData.of("200", "회원가입 성공", null);
+  }
+
+  @PreAuthorize("isAuthenticated()")
+  @PostMapping("/signout")
+  public RsData<?> logoutUser() {
+    Object principle = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+    Long userId = ((UserDetailsImpl) principle).getId();
+    refreshTokenService.deleteByUserId(userId);
+
+    Cookie jwtCookie = jwtUtils.getCleanJwtCookie();
+    Cookie jwtRefreshCookie = jwtUtils.getCleanJwtRefreshCookie();
+
+    rq.addCookie(jwtCookie);
+    rq.addCookie(jwtRefreshCookie);
+
+    return RsData.of("200", "로그아웃 성공", null);
   }
 
   @PreAuthorize("isAnonymous()")

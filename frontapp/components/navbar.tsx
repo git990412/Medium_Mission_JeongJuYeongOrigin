@@ -17,7 +17,10 @@ import clsx from "clsx";
 import {ThemeSwitch} from "@/components/theme-switch";
 import React from "react";
 import {useAppSelector} from "@/_app/hooks";
-import {selectAuthState} from "@/_app/feature/auth";
+import {selectAuthState, setAuthState} from "@/_app/feature/auth";
+import {instance} from "@/config/axiosConfig";
+import RsData from "@/types/rsData";
+import {useDispatch} from "react-redux";
 
 const navItems = [
     {
@@ -29,14 +32,29 @@ const navItems = [
         label: "Sign Up",
         href: "/member/join",
         permission:"anonymous"
+    },
+    {
+        label: "Sign Out",
+        href: "#",
+        permission:"auth"
     }
 ]
 
 export const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
     const isLogin = useAppSelector(selectAuthState);
+    const dispatch = useDispatch();
 
-    const filteredNavItems = isLogin ? navItems.filter(item => item.permission !== 'anonymous') : navItems;
+    const singOut = () => {
+        instance.post("/members/signout").then((res) => {
+            const rsData:RsData = res.data;
+            if(rsData.success){
+                dispatch(setAuthState(false));
+            }
+        })
+    }
+
+    const filteredNavItems = isLogin ? navItems.filter(item => item.permission !== 'anonymous') : navItems.filter(item => item.permission !== 'auth');
 
     return (
         <NextUINavbar maxWidth="xl" position="sticky" isMenuOpen={isMenuOpen} onMenuOpenChange={setIsMenuOpen}>
@@ -62,6 +80,9 @@ export const Navbar = () => {
                                 )}
                                 color="foreground"
                                 href={item.href}
+                                onClick={() => {
+                                    if(item.label == "Sign Out") singOut();
+                                }}
                             >
                                 {item.label}
                             </NextLink>
@@ -83,7 +104,12 @@ export const Navbar = () => {
                                 <Link
                                     href={item.href}
                                     size="lg"
-                                    onClick={() => setIsMenuOpen(false)}
+                                    onClick={() => {
+                                        if(item.label == "Sign out") {
+                                            singOut();
+                                        }
+                                        setIsMenuOpen(false)
+                                    }}
                                 >
                                     {item.label}
                                 </Link>

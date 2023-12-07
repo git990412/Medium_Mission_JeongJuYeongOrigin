@@ -12,6 +12,7 @@ import java.util.Date;
 import javax.crypto.SecretKey;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.WebUtils;
 
@@ -101,5 +102,13 @@ public class JwtUtils {
     } else {
       return null;
     }
+  }
+
+    public Cookie getCleanJwtCookie() {
+      return new Cookie(jwtCookie, null);
+    }
+
+  public Cookie getCleanJwtRefreshCookie() {
+    return new Cookie(jwtRefreshCookie, null);
   }
 }
