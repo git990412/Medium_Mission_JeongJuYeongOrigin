@@ -6,7 +6,7 @@ import {useRouter} from 'next/navigation'
 import {ThemeProvider as NextThemesProvider} from "next-themes";
 import {ThemeProviderProps} from "next-themes/dist/types";
 import {Provider} from "react-redux";
-import {store} from "@/_app/store";
+import store from "@/_app/reduces";
 import {PersistGate} from "redux-persist/integration/react";
 import {persistStore} from "redux-persist";
 

@@ -16,20 +16,27 @@ import clsx from "clsx";
 
 import {ThemeSwitch} from "@/components/theme-switch";
 import React from "react";
+import {useAppSelector} from "@/_app/hooks";
+import {selectAuthState} from "@/_app/feature/auth";
 
 const navItems = [
     {
         label: "Login",
         href: "/member/login",
+        permission:"anonymous"
     },
     {
         label: "Sign Up",
         href: "/member/join",
+        permission:"anonymous"
     }
 ]
 
 export const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+    const isLogin = useAppSelector(selectAuthState);
+
+    const filteredNavItems = isLogin ? navItems.filter(item => item.permission !== 'anonymous') : navItems;
 
     return (
         <NextUINavbar maxWidth="xl" position="sticky" isMenuOpen={isMenuOpen} onMenuOpenChange={setIsMenuOpen}>
@@ -39,7 +46,6 @@ export const Navbar = () => {
                         <p className="font-bold text-inherit">Medium</p>
                     </NextLink>
                 </NavbarBrand>
-
             </NavbarContent>
 
             <NavbarContent
@@ -47,7 +53,7 @@ export const Navbar = () => {
                 justify="end"
             >
                 <ul className="hidden lg:flex gap-4 justify-start ml-2">
-                    {navItems.map((item) => (
+                    {filteredNavItems.map((item) => (
                         <NavbarItem key={item.href}>
                             <NextLink
                                 className={clsx(
@@ -71,17 +77,18 @@ export const Navbar = () => {
 
             <NavbarMenu>
                 <div className="mx-4 mt-2 flex flex-col gap-2">
-                    {navItems.map((item, index) => (
-                        <NavbarMenuItem key={`${item}-${index}`}>
-                            <Link
-                                href={item.href}
-                                size="lg"
-                                onClick={() => setIsMenuOpen(false)}
-                            >
-                                {item.label}
-                            </Link>
-                        </NavbarMenuItem>
-                    ))}
+                    {filteredNavItems.map((item, index) => {
+                        return (
+                            <NavbarMenuItem key={`${item}-${index}`}>
+                                <Link
+                                    href={item.href}
+                                    size="lg"
+                                    onClick={() => setIsMenuOpen(false)}
+                                >
+                                    {item.label}
+                                </Link>
+                            </NavbarMenuItem>
+                        )})}
                 </div>
             </NavbarMenu>
         </NextUINavbar>

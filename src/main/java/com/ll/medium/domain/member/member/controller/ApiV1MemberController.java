@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -34,6 +35,7 @@ public class ApiV1MemberController {
   private final RefreshTokenService refreshTokenService;
   private final Rq rq;
 
+  @PreAuthorize("isAnonymous()")
   @PostMapping("")
   public RsData<?> join(@Valid @RequestBody JoinForm joinForm, BindingResult bindingResult) {
     HashMap<String, String> data = new HashMap<>();
@@ -61,17 +63,7 @@ public class ApiV1MemberController {
     return RsData.of("200", "회원가입 성공", null);
   }
 
-  @GetMapping("/auth")
-  public RsData<?> auth() {
-    if (rq.getJwt() == null) {
-      return RsData.of("400", "Login Require", null);
-    } else if (jwtUtils.validateJwtToken(rq.getJwt())) {
-      return RsData.of("200", "Authenticated", null);
-    } else {
-      return RsData.of("400", "Expired", null);
-    }
-  }
-
+  @PreAuthorize("isAnonymous()")
   @PostMapping("/login")
   public RsData<?> login(@Valid @RequestBody LoginForm loginForm, BindingResult bindingResult)
       throws IOException {

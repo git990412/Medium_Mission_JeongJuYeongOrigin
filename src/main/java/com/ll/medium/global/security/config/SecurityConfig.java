@@ -1,5 +1,6 @@
 package com.ll.medium.global.security.config;
 
+import com.ll.medium.jwt.JwtFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -13,6 +14,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -20,6 +22,10 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+  @Bean
+  public JwtFilter jwtFilter(){
+    return new JwtFilter();
+  }
 
   @Bean
   SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -43,7 +49,8 @@ public class SecurityConfig {
         .csrf(AbstractHttpConfigurer::disable)
         .sessionManagement(
             sessionManagement ->
-                sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);
 
     return http.build();
   }

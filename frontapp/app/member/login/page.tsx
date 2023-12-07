@@ -6,9 +6,13 @@ import React, {ChangeEvent, useEffect} from "react";
 import {instance} from "@/config/axiosConfig";
 import RsData from "@/types/rsData";
 import {useDispatch} from "react-redux";
-import {setAuthState} from "@/_app/feature/auth";
+import {selectAuthState, setAuthState} from "@/_app/feature/auth";
+import {useAppSelector} from "@/_app/hooks";
+import {is} from "immer/src/utils/common";
+import {router} from "next/client";
+import withAuth from "@/components/PrivateRoute.";
 
-export default function () {
+const Page = () => {
     const dispatch = useDispatch();
 
     const [inputVal, setInputVal] = React.useState({
@@ -51,12 +55,6 @@ export default function () {
         })
     };
 
-    useEffect(() => {
-        instance.post("/members/refreshtoken").then((res) => {
-            console.log(res.data);
-        });
-    }, []);
-
     return (
         <div className="flex flex-col items-center">
             <div className="font-bold text-6xl mt-10">Login</div>
@@ -87,3 +85,5 @@ export default function () {
         </div>
     )
 }
+
+export default withAuth(Page);
