@@ -29,6 +29,11 @@ const navItems = [
         permission: "all"
     },
     {
+        label: "MyList",
+        href: "/post/myList",
+        permission: "auth"
+    },
+    {
         label: "Login",
         href: "/member/login",
         permission: "anonymous"
