@@ -24,20 +24,26 @@ import {useDispatch} from "react-redux";
 
 const navItems = [
     {
+        label: "전체 게시판",
+        href: "/post/list",
+        permission: "all"
+    },
+    {
         label: "Login",
         href: "/member/login",
-        permission:"anonymous"
+        permission: "anonymous"
     },
     {
         label: "Sign Up",
         href: "/member/join",
-        permission:"anonymous"
+        permission: "anonymous"
     },
     {
         label: "Sign Out",
         href: "#",
-        permission:"auth"
-    }
+        permission: "auth"
+    },
+
 ]
 
 export const Navbar = () => {
@@ -47,8 +53,8 @@ export const Navbar = () => {
 
     const singOut = () => {
         instance.post("/members/signout").then((res) => {
-            const rsData:RsData = res.data;
-            if(rsData.success){
+            const rsData: RsData = res.data;
+            if (rsData.success) {
                 dispatch(setAuthState(false));
             }
         })
@@ -81,7 +87,7 @@ export const Navbar = () => {
                                 color="foreground"
                                 href={item.href}
                                 onClick={() => {
-                                    if(item.label == "Sign Out") singOut();
+                                    if (item.label == "Sign Out") singOut();
                                 }}
                             >
                                 {item.label}
@@ -105,7 +111,7 @@ export const Navbar = () => {
                                     href={item.href}
                                     size="lg"
                                     onClick={() => {
-                                        if(item.label == "Sign out") {
+                                        if (item.label == "Sign out") {
                                             singOut();
                                         }
                                         setIsMenuOpen(false)
@@ -114,7 +120,8 @@ export const Navbar = () => {
                                     {item.label}
                                 </Link>
                             </NavbarMenuItem>
-                        )})}
+                        )
+                    })}
                 </div>
             </NavbarMenu>
         </NextUINavbar>

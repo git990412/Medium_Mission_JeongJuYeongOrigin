@@ -24,5 +24,6 @@ public class PostDto {
     this.isPublished = post.isPublished();
     this.createDate = post.getCreateDate();
     this.modifyDate = post.getModifyDate();
+    this.member = new MemberDto(post.getMember());
   }
 }
