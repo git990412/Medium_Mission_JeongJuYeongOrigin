@@ -24,4 +24,9 @@ public class PostService {
     Pageable pageable = PageRequest.of(page, 10);
     return postRepository.findByIsPublishedTrueOrderByIdDesc(pageable).map(PostDto::new);
   }
+
+  public Page<PostDto> getMyList(int page, long userId) {
+    Pageable pageable = PageRequest.of(page, 10);
+    return postRepository.findByMemberIdOrderByIdDesc(pageable, userId).map(PostDto::new);
+  }
 }

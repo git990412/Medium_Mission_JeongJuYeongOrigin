@@ -2,15 +2,12 @@
 import {Input} from "@nextui-org/input";
 import PasswordInput from "@/app/member/join/_components/PasswordInput";
 import {Button} from "@nextui-org/button";
-import React, {ChangeEvent, useEffect} from "react";
+import React, {ChangeEvent} from "react";
 import {instance} from "@/config/axiosConfig";
 import RsData from "@/types/rsData";
 import {useDispatch} from "react-redux";
-import {selectAuthState, setAuthState} from "@/_app/feature/auth";
-import {useAppSelector} from "@/_app/hooks";
-import {is} from "immer/src/utils/common";
-import {router} from "next/client";
-import withAuth from "@/components/PrivateRoute.";
+import {setAuthState} from "@/_app/feature/auth";
+import {deniedAuth} from "@/components/PrivateRoute.";
 
 const Page = () => {
     const dispatch = useDispatch();
@@ -86,4 +83,4 @@ const Page = () => {
     )
 }
 
-export default withAuth(Page);
+export default deniedAuth(Page);

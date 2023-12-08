@@ -7,4 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
   Page<Post> findByIsPublishedTrueOrderByIdDesc(Pageable pageable);
+
+  Page<Post> findByMemberIdOrderByIdDesc(Pageable pageable, long userId);
 }

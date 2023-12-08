@@ -5,19 +5,11 @@ import PasswordInput from "./_components/PasswordInput";
 import {Button} from "@nextui-org/button";
 import {Input} from "@nextui-org/input";
 import {instance} from "@/config/axiosConfig";
-import React, {ChangeEvent, useEffect, useState} from "react";
+import React, {ChangeEvent, useEffect} from "react";
 import RsData from "@/types/rsData";
 import {useDisclosure} from "@nextui-org/react";
 import CompleteAlert from "@/app/member/join/_components/CompleteAlert";
-import auth, {selectAuthState} from "@/_app/feature/auth";
-import {useSelector} from "react-redux";
-import {router} from "next/client";
-import {GetServerSideProps, NextPage} from "next";
-import withAuth from "@/components/PrivateRoute.";
-import {NextRequest} from "next/server";
-import {useAppSelector} from "@/_app/hooks";
-import {useRouter} from "next/navigation";
-import {is} from "immer/src/utils/common";
+import {deniedAuth} from "@/components/PrivateRoute.";
 
 const JoinPage = () => {
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -118,4 +110,4 @@ const JoinPage = () => {
     );
 }
 
-export default withAuth(JoinPage);
+export default deniedAuth(JoinPage);

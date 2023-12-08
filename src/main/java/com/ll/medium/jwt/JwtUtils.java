@@ -12,7 +12,6 @@ import java.util.Date;
 import javax.crypto.SecretKey;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.WebUtils;
 
@@ -104,11 +103,15 @@ public class JwtUtils {
     }
   }
 
-    public Cookie getCleanJwtCookie() {
-      return new Cookie(jwtCookie, null);
-    }
+  public Cookie getCleanJwtCookie() {
+    Cookie cookie = new Cookie(jwtCookie, null);
+    cookie.setPath("/api");
+    return cookie;
+  }
 
   public Cookie getCleanJwtRefreshCookie() {
-    return new Cookie(jwtRefreshCookie, null);
+    Cookie cookie = new Cookie(jwtRefreshCookie, null);
+    cookie.setPath("/api/v1/members/refreshtoken");
+    return cookie;
   }
 }
