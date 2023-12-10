@@ -1,5 +1,8 @@
 'use client'
-import React from "react";
+import { instance } from "@/config/axiosConfig";
+import Post from "@/types/Post";
+import formatDate from "@/util/formatDate";
+import { Link } from "@nextui-org/link";
 import {
     getKeyValue,
     Pagination,
@@ -11,16 +14,13 @@ import {
     TableHeader,
     TableRow
 } from "@nextui-org/react";
+import React from "react";
 import useSWR from "swr";
-import {instance} from "@/config/axiosConfig";
-import Post from "@/types/Post";
-import formatDate from "@/util/formatDate";
-import {Link} from "@nextui-org/link";
 
 export default function App() {
     const [page, setPage] = React.useState(1);
 
-    const {data, isLoading} = useSWR(`/post/list?page=${page - 1}`, async (u) => {
+    const { data, isLoading } = useSWR(`/post/list?page=${page - 1}`, async (u) => {
         const res = await instance.get(u);
         const rsData = res.data;
 
@@ -69,7 +69,7 @@ export default function App() {
                 </TableHeader>
                 <TableBody
                     items={data?.content ?? []}
-                    loadingContent={<Spinner/>}
+                    loadingContent={<Spinner />}
                     loadingState={loadingState}
                 >
                     {(item) => (
@@ -83,7 +83,7 @@ export default function App() {
                                     return (
                                         <TableCell>
                                             <Link size={"sm"}
-                                                  href={`/post/${(item as Post).id}`}>{getKeyValue(item, columnKey)}</Link>
+                                                href={`/post/${(item as Post).id}`}>{getKeyValue(item, columnKey)}</Link>
                                         </TableCell>
                                     )
                                 }

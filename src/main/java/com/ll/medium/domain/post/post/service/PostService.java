@@ -1,13 +1,15 @@
 package com.ll.medium.domain.post.post.service;
 
-import com.ll.medium.domain.post.post.dto.PostDto;
-import com.ll.medium.domain.post.post.repository.PostRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.ll.medium.domain.post.post.dto.PostDto;
+import com.ll.medium.domain.post.post.repository.PostRepository;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @Transactional(readOnly = true)
@@ -28,5 +30,9 @@ public class PostService {
   public Page<PostDto> getMyList(int page, long userId) {
     Pageable pageable = PageRequest.of(page, 10);
     return postRepository.findByMemberIdOrderByIdDesc(pageable, userId).map(PostDto::new);
+  }
+
+  public PostDto getOne(long id) {
+    return new PostDto(postRepository.findById(id).orElseThrow());
   }
 }

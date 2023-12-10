@@ -1,6 +1,11 @@
 'use client';
+import { instance } from "@/config/axiosConfig";
+import Post from "@/types/Post";
+import RsData from "@/types/rsData";
+import formatDate from "@/util/formatDate";
 import {
     getKeyValue,
+    Link,
     Pagination,
     Table,
     TableBody,
@@ -9,11 +14,7 @@ import {
     TableHeader,
     TableRow
 } from "@nextui-org/react";
-import React, {useEffect, useState} from "react";
-import {instance} from "@/config/axiosConfig";
-import RsData from "@/types/rsData";
-import Post from "@/types/Post";
-import formatDate from "@/util/formatDate";
+import React, { useEffect, useState } from "react";
 
 
 export default function Home() {
@@ -78,6 +79,13 @@ export default function Home() {
                                 if (columnKey === 'username') {
                                     return (
                                         <TableCell>{getKeyValue(item.member, columnKey)}</TableCell>
+                                    )
+                                } else if (columnKey === 'title') {
+                                    return (
+                                        <TableCell>
+                                            <Link size={"sm"}
+                                                href={`/post/${(item as Post).id}`}>{getKeyValue(item, columnKey)}</Link>
+                                        </TableCell>
                                     )
                                 }
                                 return <TableCell>{getKeyValue(item, columnKey)}</TableCell>
