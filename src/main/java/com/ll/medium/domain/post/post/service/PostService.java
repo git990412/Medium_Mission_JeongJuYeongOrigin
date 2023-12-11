@@ -6,9 +6,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ll.medium.domain.member.member.repository.MemberRepository;
 import com.ll.medium.domain.post.post.dto.PostDto;
+import com.ll.medium.domain.post.post.entity.Post;
+import com.ll.medium.domain.post.post.form.WriteForm;
 import com.ll.medium.domain.post.post.repository.PostRepository;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -16,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PostService {
   private final PostRepository postRepository;
+  private final MemberRepository memberRepository;
 
   public Page<PostDto> getLatest30() {
     Pageable pageable = PageRequest.of(0, 30);
@@ -34,5 +39,16 @@ public class PostService {
 
   public PostDto getOne(long id) {
     return new PostDto(postRepository.findById(id).orElseThrow());
+  }
+
+  public void writePost(@Valid WriteForm form, Long id) {
+    Post post = Post.builder()
+        .title(form.getTitle())
+        .body(form.getBody())
+        .isPublished(true)
+        .member(memberRepository.findById(id).orElseThrow())
+        .build();
+
+    postRepository.save(post);
   }
 }

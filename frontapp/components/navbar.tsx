@@ -1,32 +1,37 @@
 'use client'
+import { Link } from "@nextui-org/link";
 import {
-    Navbar as NextUINavbar,
     NavbarBrand,
     NavbarContent,
     NavbarItem,
     NavbarMenu,
     NavbarMenuItem,
     NavbarMenuToggle,
+    Navbar as NextUINavbar,
 } from "@nextui-org/navbar";
-import {Link} from "@nextui-org/link";
 
-import {link as linkStyles} from "@nextui-org/theme";
-import NextLink from "next/link";
+import { link as linkStyles } from "@nextui-org/theme";
 import clsx from "clsx";
+import NextLink from "next/link";
 
-import {ThemeSwitch} from "@/components/theme-switch";
-import React from "react";
-import {useAppSelector} from "@/_app/hooks";
-import {selectAuthState, setAuthState} from "@/_app/feature/auth";
-import {instance} from "@/config/axiosConfig";
+import { selectAuthState, setAuthState } from "@/_app/feature/auth";
+import { useAppSelector } from "@/_app/hooks";
+import { ThemeSwitch } from "@/components/theme-switch";
+import { instance } from "@/config/axiosConfig";
 import RsData from "@/types/rsData";
-import {useDispatch} from "react-redux";
+import React from "react";
+import { useDispatch } from "react-redux";
 
 const navItems = [
     {
         label: "전체 게시판",
         href: "/post/list",
         permission: "all"
+    },
+    {
+        label: "글 작성",
+        href: "/post/write",
+        permission: "auth"
     },
     {
         label: "MyList",
@@ -48,6 +53,7 @@ const navItems = [
         href: "#",
         permission: "auth"
     },
+
 
 ]
 
@@ -86,7 +92,7 @@ export const Navbar = () => {
                         <NavbarItem key={item.href}>
                             <NextLink
                                 className={clsx(
-                                    linkStyles({color: "foreground"}),
+                                    linkStyles({ color: "foreground" }),
                                     "data-[active=true]:text-primary data-[active=true]:font-medium"
                                 )}
                                 color="foreground"
@@ -103,8 +109,8 @@ export const Navbar = () => {
             </NavbarContent>
 
             <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
-                <ThemeSwitch/>
-                <NavbarMenuToggle/>
+                <ThemeSwitch />
+                <NavbarMenuToggle />
             </NavbarContent>
 
             <NavbarMenu>
