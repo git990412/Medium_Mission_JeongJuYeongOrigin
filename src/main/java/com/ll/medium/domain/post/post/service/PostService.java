@@ -68,4 +68,15 @@ public class PostService {
   public void deletePost(Long id) {
     postRepository.deleteById(id);
   }
+
+  @Transactional
+  public void increaseHit(Long id) {
+    Post post = postRepository.findById(id).orElseThrow();
+    if (post.getHit() == null) {
+      post.setHit(1L);
+    } else {
+      post.setHit(post.getHit() + 1);
+    }
+    postRepository.save(post);
+  }
 }

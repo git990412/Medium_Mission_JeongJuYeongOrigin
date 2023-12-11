@@ -13,6 +13,9 @@ const Page = ({ params }: { params: { index: string } }) => {
     const username = useAppSelector(selectUsername);
 
     useEffect(() => {
+        //조회수 증가
+        instance.put(`/post/${params.index}/hit`)
+
         instance.get(`/post/${params.index}`).then((res) => {
             const rsData = res.data;
 

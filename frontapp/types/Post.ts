@@ -8,4 +8,5 @@ export default interface Post {
     createDate: Date;
     modifyDate: Date;
     member: Member;
+    hit: number;
 }

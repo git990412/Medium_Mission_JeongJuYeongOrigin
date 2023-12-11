@@ -113,4 +113,10 @@ public class ApiV1PostController {
       return RsData.of("400", "fail", null);
     }
   }
+
+  @PutMapping("{id}/hit")
+  public RsData<?> increaseHit(@PathVariable("id") Long id) {
+    postService.increaseHit(id);
+    return RsData.of("200", "success", null);
+  }
 }

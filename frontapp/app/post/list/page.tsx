@@ -64,6 +64,7 @@ export default function App() {
                     <TableColumn key="title">제목</TableColumn>
                     <TableColumn key="createDate">작성일</TableColumn>
                     <TableColumn key="username">작성자</TableColumn>
+                    <TableColumn key="hit">조회수</TableColumn>
                 </TableHeader>
                 <TableBody
                     items={data?.content ?? []}
