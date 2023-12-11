@@ -7,6 +7,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -66,4 +67,36 @@ public class ApiV1PostController {
     return RsData.of("200", "success", null);
   }
 
+  @PreAuthorize("isAuthenticated()")
+  @GetMapping("/{id}/check")
+  public RsData<?> check(@PathVariable("id") long id) {
+    Long postMemberId = postService.getPostMemberId(id);
+    if (rq.getUserDetails().getId() == postMemberId) {
+      return RsData.of("200", "success", null);
+    } else {
+      return RsData.of("400", "fail", null);
+    }
+  }
+
+  @PreAuthorize("isAuthenticated()")
+  @PutMapping("/{id}/modify")
+  public RsData<?> putMethodName(@PathVariable("id") Long id, @Valid @RequestBody WriteForm form,
+      BindingResult bindingResult) {
+    HashMap<String, String> errors = new HashMap<>();
+    if (bindingResult.hasErrors()) {
+      bindingResult.getFieldErrors().forEach(e -> {
+        errors.put(e.getField(), e.getDefaultMessage());
+      });
+      return RsData.of("400", "fail", errors);
+    }
+
+    Long MemberId = postService.getPostMemberId(id);
+
+    if (rq.getUserDetails().getId() == MemberId) {
+      postService.updatePost(form, id);
+      return RsData.of("200", "success", null);
+    } else {
+      return RsData.of("400", "fail", null);
+    }
+  }
 }

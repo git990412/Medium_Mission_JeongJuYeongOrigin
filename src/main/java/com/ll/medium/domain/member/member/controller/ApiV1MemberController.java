@@ -1,20 +1,8 @@
 package com.ll.medium.domain.member.member.controller;
 
-import com.ll.medium.domain.member.member.form.JoinForm;
-import com.ll.medium.domain.member.member.form.LoginForm;
-import com.ll.medium.domain.member.member.service.MemberService;
-import com.ll.medium.global.rq.Rq;
-import com.ll.medium.global.rsData.RsData;
-import com.ll.medium.global.security.service.UserDetailsImpl;
-import com.ll.medium.jwt.JwtUtils;
-import com.ll.medium.jwt.entity.RefreshToken;
-import com.ll.medium.jwt.service.RefreshTokenService;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
 import java.io.IOException;
 import java.util.HashMap;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,6 +15,22 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.ll.medium.domain.member.member.dto.MemberDto;
+import com.ll.medium.domain.member.member.form.JoinForm;
+import com.ll.medium.domain.member.member.form.LoginForm;
+import com.ll.medium.domain.member.member.service.MemberService;
+import com.ll.medium.global.rq.Rq;
+import com.ll.medium.global.rsData.RsData;
+import com.ll.medium.global.security.service.UserDetailsImpl;
+import com.ll.medium.jwt.JwtUtils;
+import com.ll.medium.jwt.entity.RefreshToken;
+import com.ll.medium.jwt.service.RefreshTokenService;
+
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
@@ -101,10 +105,9 @@ public class ApiV1MemberController {
     // 인증
     try {
 
-      Authentication authentication =
-          authenticationManager.authenticate(
-              new UsernamePasswordAuthenticationToken(
-                  loginForm.getUsername(), loginForm.getPassword()));
+      Authentication authentication = authenticationManager.authenticate(
+          new UsernamePasswordAuthenticationToken(
+              loginForm.getUsername(), loginForm.getPassword()));
 
       SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -124,7 +127,10 @@ public class ApiV1MemberController {
       rq.addCookie(jwtCookie);
       rq.addCookie(refreshTokenCookie);
 
-      return RsData.of("200", "로그인 성공", null);
+      MemberDto memberDto = new MemberDto();
+      memberDto.setUsername(userDetails.getUsername());
+
+      return RsData.of("200", "로그인 성공", memberDto);
     } catch (AuthenticationException e) {
 
       data.put("password", "비밀번호가 일치하지 않습니다.");

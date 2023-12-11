@@ -11,4 +11,5 @@ public class WriteForm {
     private String title;
     @NotBlank
     private String body;
+    private boolean isPublished;
 }

@@ -12,7 +12,6 @@ import com.ll.medium.domain.post.post.entity.Post;
 import com.ll.medium.domain.post.post.form.WriteForm;
 import com.ll.medium.domain.post.post.repository.PostRepository;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -41,14 +40,27 @@ public class PostService {
     return new PostDto(postRepository.findById(id).orElseThrow());
   }
 
-  public void writePost(@Valid WriteForm form, Long id) {
+  @Transactional
+  public void writePost(WriteForm form, Long id) {
     Post post = Post.builder()
         .title(form.getTitle())
         .body(form.getBody())
-        .isPublished(true)
+        .isPublished(form.isPublished())
         .member(memberRepository.findById(id).orElseThrow())
         .build();
 
     postRepository.save(post);
+  }
+
+  @Transactional
+  public void updatePost(WriteForm form, Long id) {
+    Post post = postRepository.findById(id).orElseThrow();
+    post.setTitle(form.getTitle());
+    post.setBody(form.getBody());
+    post.setPublished(form.isPublished());
+  }
+
+  public Long getPostMemberId(long id) {
+    return postRepository.findById(id).orElseThrow().getMember().getId();
   }
 }

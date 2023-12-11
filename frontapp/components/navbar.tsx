@@ -66,7 +66,7 @@ export const Navbar = () => {
         instance.post("/members/signout").then((res) => {
             const rsData: RsData = res.data;
             if (rsData.success) {
-                dispatch(setAuthState(false));
+                dispatch(setAuthState({ state: false, member: { username: "" } }));
             }
         })
     }

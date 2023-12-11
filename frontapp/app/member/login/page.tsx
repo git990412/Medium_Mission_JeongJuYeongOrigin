@@ -1,13 +1,13 @@
 'use client'
-import {Input} from "@nextui-org/input";
+import { setAuthState } from "@/_app/feature/auth";
 import PasswordInput from "@/app/member/join/_components/PasswordInput";
-import {Button} from "@nextui-org/button";
-import React, {ChangeEvent} from "react";
-import {instance} from "@/config/axiosConfig";
+import { deniedAuth } from "@/components/PrivateRoute.";
+import { instance } from "@/config/axiosConfig";
 import RsData from "@/types/rsData";
-import {useDispatch} from "react-redux";
-import {setAuthState} from "@/_app/feature/auth";
-import {deniedAuth} from "@/components/PrivateRoute.";
+import { Button } from "@nextui-org/button";
+import { Input } from "@nextui-org/input";
+import React, { ChangeEvent } from "react";
+import { useDispatch } from "react-redux";
 
 const Page = () => {
     const dispatch = useDispatch();
@@ -41,13 +41,14 @@ const Page = () => {
         const data = Object.fromEntries(formData.entries());
         instance.post("/members/login", data).then((res) => {
             const rsData: RsData = res.data;
+
             if (rsData.fail) {
                 setError({
                     ...error,
                     ...rsData.data
                 })
             } else {
-                dispatch(setAuthState(true));
+                dispatch(setAuthState({ state: true, member: rsData.data }));
             }
         })
     };

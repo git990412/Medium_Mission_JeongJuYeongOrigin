@@ -24,8 +24,6 @@ export default function App() {
         const res = await instance.get(u);
         const rsData = res.data;
 
-        console.log(rsData.data.content);
-
         rsData.data.content = rsData.data.content.map((post: any) => {
             post.createDate = formatDate(new Date(post.createDate));
             return post;

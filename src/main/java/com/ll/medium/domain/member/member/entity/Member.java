@@ -2,12 +2,24 @@ package com.ll.medium.domain.member.member.entity;
 
 import static lombok.AccessLevel.PROTECTED;
 
-import com.ll.medium.domain.member.role.entity.Role;
-import com.ll.medium.global.jpa.entity.BaseEntity;
-import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
-import lombok.*;
+
+import com.ll.medium.domain.member.role.entity.Role;
+import com.ll.medium.global.jpa.entity.BaseEntity;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 @Entity
@@ -24,9 +36,7 @@ public class Member extends BaseEntity {
   private String password;
 
   @ManyToMany(fetch = FetchType.LAZY)
-  @JoinTable(
-      name = "member_roles",
-      joinColumns = @JoinColumn(name = "member_id"),
-      inverseJoinColumns = @JoinColumn(name = "role_id"))
+  @JoinTable(name = "member_roles", joinColumns = @JoinColumn(name = "member_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+  @Builder.Default
   private Set<Role> roles = new HashSet<>();
 }

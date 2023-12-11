@@ -27,7 +27,7 @@ public class RsData<T> {
     return !isSuccess();
   }
 
-  public <T> RsData<T> of(T data) {
+  public RsData<T> of(T data) {
     return RsData.of(resultCode, msg, data);
   }
 }
