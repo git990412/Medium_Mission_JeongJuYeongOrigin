@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -94,6 +95,19 @@ public class ApiV1PostController {
 
     if (rq.getUserDetails().getId() == MemberId) {
       postService.updatePost(form, id);
+      return RsData.of("200", "success", null);
+    } else {
+      return RsData.of("400", "fail", null);
+    }
+  }
+
+  @PreAuthorize("isAuthenticated()")
+  @DeleteMapping("/{id}/delete")
+  public RsData<?> deletePost(@PathVariable("id") Long id) {
+    Long MemberId = postService.getPostMemberId(id);
+
+    if (rq.getUserDetails().getId() == MemberId) {
+      postService.deletePost(id);
       return RsData.of("200", "success", null);
     } else {
       return RsData.of("400", "fail", null);

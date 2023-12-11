@@ -20,6 +20,17 @@ const Page = ({ params }: { params: { index: string } }) => {
         })
     }, [])
 
+    const deletePost = () => {
+        instance.delete(`/post/${params.index}/delete`).then((res) => {
+            const rsData = res.data;
+
+            if (rsData.success) {
+                alert("삭제되었습니다.");
+                window.location.href = "/";
+            }
+        })
+    }
+
 
 
     const [post, setPost] = useState({} as Post);
@@ -30,7 +41,7 @@ const Page = ({ params }: { params: { index: string } }) => {
             <Divider className="mt-2" />
             <div className="mt-2">{post.body}</div>
             {username === post.member?.username ? <Button className="mt-2 float-right" as={Link} href={`/post/${post.id}/modify`} color="primary">수정</Button> : null}
-
+            {username === post.member?.username ? <Button className="mt-2 mr-2 float-right" onClick={deletePost} color="primary">삭제</Button> : null}
         </div>
     )
 }

@@ -13,7 +13,7 @@ import { useEffect, useState } from "react";
 const Page = ({ params }: { params: { index?: string } }) => {
     const router = useRouter();
 
-    const [post, setPost] = useState({} as Post);
+    const [post, setPost] = useState<Post>({} as Post);
 
     useEffect(() => {
         instance.get(`/post/${params.index}`).then((res) => {
@@ -24,6 +24,13 @@ const Page = ({ params }: { params: { index?: string } }) => {
     }, [])
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.type === "checkbox") {
+            setPost({
+                ...post,
+                [e.target.name]: e.target.checked
+            })
+            return;
+        }
         setPost({
             ...post,
             [e.target.name]: e.target.value
@@ -32,9 +39,7 @@ const Page = ({ params }: { params: { index?: string } }) => {
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const formData = new FormData(e.currentTarget);
-        const data = Object.fromEntries(formData.entries());
-        instance.put(`/post/${params.index}/modify`, data).then((res) => {
+        instance.put(`/post/${params.index}/modify`, post).then((res) => {
             const rsData: RsData = res.data;
             if (rsData.success) {
                 alert("수정되었습니다.");
@@ -46,7 +51,7 @@ const Page = ({ params }: { params: { index?: string } }) => {
     return (
         <form onSubmit={handleSubmit}>
             <Input name="title" size={"lg"} onChange={handleChange} value={post.title} placeholder={"제목"} variant={"underlined"} />
-            <Checkbox name="isPublished" className="mt-2" defaultSelected>공개</Checkbox>
+            <Checkbox name="published" isSelected={post.published} onChange={handleChange} className="mt-2" defaultSelected>공개</Checkbox>
             <Textarea
                 name="body"
                 onChange={handleChange}

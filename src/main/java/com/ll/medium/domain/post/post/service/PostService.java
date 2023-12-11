@@ -63,4 +63,9 @@ public class PostService {
   public Long getPostMemberId(long id) {
     return postRepository.findById(id).orElseThrow().getMember().getId();
   }
+
+  @Transactional
+  public void deletePost(Long id) {
+    postRepository.deleteById(id);
+  }
 }

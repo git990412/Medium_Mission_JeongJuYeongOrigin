@@ -1,8 +1,9 @@
 'use client'
-import React from "react";
-import {instance} from "@/config/axiosConfig";
-import useSWR from "swr";
+import { accessAuth } from "@/components/PrivateRoute.";
+import { instance } from "@/config/axiosConfig";
+import Post from "@/types/Post";
 import formatDate from "@/util/formatDate";
+import { Link } from "@nextui-org/link";
 import {
     getKeyValue,
     Pagination,
@@ -14,18 +15,15 @@ import {
     TableHeader,
     TableRow
 } from "@nextui-org/react";
-import Post from "@/types/Post";
-import {Link} from "@nextui-org/link";
-import {accessAuth} from "@/components/PrivateRoute.";
+import React from "react";
+import useSWR from "swr";
 
 const Page = () => {
     const [page, setPage] = React.useState(1);
 
-    const {data, isLoading} = useSWR(`/post/myList?page=${page - 1}`, async (u) => {
+    const { data, isLoading } = useSWR(`/post/myList?page=${page - 1}`, async (u) => {
         const res = await instance.get(u);
         const rsData = res.data;
-
-        console.log(rsData.data.content);
 
         rsData.data.content = rsData.data.content.map((post: any) => {
             post.createDate = formatDate(new Date(post.createDate));
@@ -70,7 +68,7 @@ const Page = () => {
                 </TableHeader>
                 <TableBody
                     items={data?.content ?? []}
-                    loadingContent={<Spinner/>}
+                    loadingContent={<Spinner />}
                     loadingState={loadingState}
                 >
                     {(item) => (
@@ -84,7 +82,7 @@ const Page = () => {
                                     return (
                                         <TableCell>
                                             <Link size={"sm"}
-                                                  href={`/post/${(item as Post).id}`}>{getKeyValue(item, columnKey)}</Link>
+                                                href={`/post/${(item as Post).id}`}>{getKeyValue(item, columnKey)}</Link>
                                         </TableCell>
                                     )
                                 }
