@@ -1,36 +1,50 @@
 'use client'
 import { accessAuth } from "@/components/PrivateRoute.";
 import { instance } from "@/config/axiosConfig";
+import "@/styles/quillStyle.css";
 import Post from "@/types/Post";
 import RsData from "@/types/rsData";
 import { Button } from "@nextui-org/button";
-import { Input, Textarea } from "@nextui-org/input";
+import { Input } from "@nextui-org/input";
 import { Checkbox } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 
 const Page = () => {
     const router = useRouter();
 
-    const [post, setPost] = useState<Post>({ published: true } as Post);
+    const modules = useMemo(
+        () => ({
+            toolbar: {
+                container: [
+                    ["bold", "italic", "underline", "strike"],
+                    ["blockquote", "code-block"],
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.type === "checkbox") {
-            setPost({
-                ...post,
-                [e.target.name]: e.target.checked
-            })
-            return;
-        }
-        setPost({
-            ...post,
-            [e.target.name]: e.target.value
-        })
-    }
+                    [{ header: 1 }, { header: 2 }],
+                    [{ list: "ordered" }, { list: "bullet" }],
+                    [{ script: "sub" }, { script: "super" }],
+                    [{ indent: "-1" }, { indent: "+1" }],
+                    [{ direction: "rtl" }],
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+                    [{ size: ["small", false, "large", "huge"] }],
+                    [{ header: [1, 2, 3, 4, 5, 6, false] }],
+
+                    [{ color: [] }, { background: [] }],
+                    [{ font: [] }],
+                    [{ align: [] }],
+
+                    ["clean"],
+                    ["image"],
+                ],
+            },
+        }),
+        []
+    );
+
+    const onSubmit = () => {
         instance.post("/post/write", post).then((res) => {
             const rsData: RsData = res.data;
             if (rsData.success) {
@@ -40,23 +54,32 @@ const Page = () => {
         })
     }
 
+    const [post, setPost] = useState<Post>({ published: true } as Post);
+
     return (
-        <form onSubmit={handleSubmit}>
-            <Input name="title" size={"lg"} value={post.title} onChange={handleChange} placeholder={"제목"} variant={"underlined"} />
-            <Checkbox name="published" isSelected={post.published} onChange={handleChange} className="mt-2" defaultSelected>공개</Checkbox>
-            <Textarea
-                name="body"
-                onChange={handleChange}
-                value={post.body}
-                className="mt-2"
+        <div>
+            <Input type="text"
+                classNames={{
+                    input: ["text-2xl"],
+                    inputWrapper: ["mb-2"]
+                }}
+                placeholder='제목을 입력해주세요'
                 variant={"underlined"}
-                labelPlacement={"inside"}
-                placeholder="내용을 입력해주세요."
-                maxRows={20}
-                size="lg"
+                value={post.title}
+                onChange={(e) => {
+                    setPost({ ...post, title: e.target.value })
+                }}
             />
-            <Button type="submit" className={"w-full mt-2"} color={"primary"}>등록하기</Button>
-        </form>
+            <Checkbox name="published" isSelected={post.published} onChange={(e) => {
+                setPost({ ...post, published: e.target.checked })
+            }} defaultSelected>공개</Checkbox>
+            <ReactQuill className="mt-2"
+                value={post.body}
+                modules={modules} theme="snow" onChange={(v) => {
+                    setPost({ ...post, body: v })
+                }} />
+            <Button className="w-full mt-2" onClick={onSubmit} color="primary">등록하기</Button>
+        </div>
     )
 }
 
