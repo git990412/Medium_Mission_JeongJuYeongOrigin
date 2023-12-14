@@ -97,11 +97,11 @@ const Page = ({ params }: { params: { index?: string } }) => {
     );
 
     const onSubmit = () => {
-        instance.post("/post/write", post).then((res) => {
+        instance.put(`/post/${params.index}/modify`, post).then((res) => {
             const rsData: RsData = res.data;
             if (rsData.success) {
-                alert("등록되었습니다.");
-                router.push("/post/list");
+                alert("수정되었습니다.");
+                router.push(`/post/${params.index}`);
             }
         })
     }
