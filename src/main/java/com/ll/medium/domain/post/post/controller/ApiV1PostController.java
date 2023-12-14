@@ -1,7 +1,14 @@
 package com.ll.medium.domain.post.post.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.UUID;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.ll.medium.domain.post.post.form.WriteForm;
 import com.ll.medium.domain.post.post.service.PostService;
@@ -28,6 +36,8 @@ import lombok.RequiredArgsConstructor;
 public class ApiV1PostController {
   private final PostService postService;
   private final Rq rq;
+
+  String uploadDir = System.getProperty("user.dir") + "/src/main/resources/static/images/";
 
   @GetMapping("/latest")
   public RsData<?> getLatest30() {
@@ -119,4 +129,30 @@ public class ApiV1PostController {
     postService.increaseHit(id);
     return RsData.of("200", "success", null);
   }
+
+  @PreAuthorize("isAuthenticated()")
+  @PostMapping("/imageUpload")
+  public RsData<?> uploadImage(@RequestParam("file") MultipartFile file) throws IllegalStateException, IOException {
+    if (file.isEmpty()) {
+      return RsData.of("400", "fail: no image resource", null);
+    }
+
+    String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+    // 파일을 저장할 경로 설정
+    File destination = new File(uploadDir + fileName);
+
+    // 파일 저장
+    file.transferTo(destination);
+
+    return RsData.of("200", "success", "/api/v1/post/getImage/" + fileName);
+  }
+
+  @GetMapping("/getImage/{fileName}")
+  public ResponseEntity<byte[]> getMethodName(@PathVariable("fileName") String fileName) throws IOException {
+    Path path = Paths.get(uploadDir + fileName);
+    byte[] image = Files.readAllBytes(path);
+
+    return ResponseEntity.ok().body(image);
+  }
+
 }

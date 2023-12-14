@@ -43,3 +43,4 @@ application-secret.yml
 ### junk ###
 medium_dev.mv.db
 medium_dev.trace.db
+!**/src/main/resources/static/images/
